@@ -11,10 +11,12 @@ app = FastAPI()
 
 def generate_caption(model, tokenizer, concepts, max_length=32):
     input_text = concepts
+
     features = tokenizer([input_text], return_tensors='pt')
     output = model.generate(input_ids=features['input_ids'], 
                 attention_mask=features['attention_mask'],
                 max_length=max_length)
+
     return tokenizer.decode(output[0])
 
 @app.post('/upload/')
@@ -39,12 +41,14 @@ async def image2caption(image_url: str = Form(...)):
 
 @app.get('/')
 async def main():
-    content = '''
-                <body>
-                <form action='/upload/' method='post'>
-                <input type='image_url' name='image_url'>
-                <input type='submit'>
-                </form>
-                </body>
-            '''
+    content = \
+    '''
+        <body>
+        <form action='/upload/' method='post'>
+        <input type='image_url' name='image_url'>
+        <input type='submit'>
+        </form>
+        </body>
+    '''
+
     return HTMLResponse(content=content)
